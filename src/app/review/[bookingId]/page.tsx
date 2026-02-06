@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import StarRating from '@/components/StarRating'
 import { CheckCircle, Ship } from 'lucide-react'
@@ -57,12 +58,12 @@ export default function SubmitReviewPage() {
             Your review has been submitted and is pending approval. 
             We appreciate your feedback!
           </p>
-          <a 
+          <Link 
             href="/"
             className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
           >
             Back to Home
-          </a>
+          </Link>
         </div>
       </div>
     )

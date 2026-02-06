@@ -1,5 +1,6 @@
 import { Flame, Clock } from 'lucide-react'
 import VesselCard from '@/components/VesselCard'
+import Link from 'next/link'
 import type { Vessel } from '@/types/database'
 
 // Mock data
@@ -105,12 +106,12 @@ export default function HotDealsPage() {
             <p className="text-gray-600 mb-8">
               Check back soon! We regularly add new deals from cancellations.
             </p>
-            <a
+            <Link
               href="/vessels"
               className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
             >
               Browse All Vessels
-            </a>
+            </Link>
           </div>
         )}
 

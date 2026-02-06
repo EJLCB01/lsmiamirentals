@@ -2,8 +2,8 @@
 
 import { useState, useEffect, useMemo } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { User, SupabaseClient } from '@supabase/supabase-js'
-import { LogIn, LogOut, User as UserIcon, Loader2 } from 'lucide-react'
+import { User } from '@supabase/supabase-js'
+import { LogOut, User as UserIcon, Loader2 } from 'lucide-react'
 
 // Check if Supabase is configured
 const isSupabaseConfigured = () => {
@@ -11,27 +11,17 @@ const isSupabaseConfigured = () => {
 }
 
 export default function AuthButton() {
-  const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [signingIn, setSigningIn] = useState(false)
-  const [configured, setConfigured] = useState(false)
-  
   const supabase = useMemo(() => {
-    if (isSupabaseConfigured()) {
-      return createClient()
-    }
-    return null
+    return isSupabaseConfigured() ? createClient() : null
   }, [])
 
+  const [user, setUser] = useState<User | null>(null)
+  const [loading, setLoading] = useState<boolean>(!!supabase)
+  const [signingIn, setSigningIn] = useState(false)
+
   useEffect(() => {
-    if (!supabase) {
-      setLoading(false)
-      setConfigured(false)
-      return
-    }
-    
-    setConfigured(true)
-    
+    if (!supabase) return
+
     // Get initial session
     const getUser = async () => {
       const { data: { user } } = await supabase.auth.getUser()
@@ -69,9 +59,7 @@ export default function AuthButton() {
   }
 
   // Don't render if Supabase isn't configured
-  if (!configured && !loading) {
-    return null
-  }
+  if (!supabase) return null
 
   if (loading) {
     return (

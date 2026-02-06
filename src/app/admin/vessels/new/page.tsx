@@ -11,7 +11,8 @@ import {
   Loader2, 
   Ship, 
   Flame, 
-  Anchor 
+  Anchor,
+  Trash2
 } from 'lucide-react'
 import Link from 'next/link'
 import type { VesselType } from '@/types/database'

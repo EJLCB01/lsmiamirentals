@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import VesselCard from '@/components/VesselCard'
 import { Filter, Ship, Sailboat, Waves } from 'lucide-react'
 import type { Vessel, VesselType } from '@/types/database'
@@ -131,11 +131,18 @@ const mockVessels: Vessel[] = [
 ]
 
 export default function VesselsPage() {
+  const router = useRouter()
   const searchParams = useSearchParams()
-  const initialType = searchParams.get('type') as VesselType | null
-  
-  const [selectedType, setSelectedType] = useState<VesselType | 'all'>(initialType || 'all')
+
+  const selectedType = (searchParams.get('type') as VesselType | null) ?? 'all'
   const [sortBy, setSortBy] = useState<'price-low' | 'price-high' | 'capacity'>('price-low')
+
+  const setType = (type: VesselType | 'all') => {
+    const params = new URLSearchParams(searchParams.toString())
+    if (type === 'all') params.delete('type')
+    else params.set('type', type)
+    router.push(`/vessels${params.toString() ? `?${params.toString()}` : ''}`)
+  }
 
   const filteredVessels = useMemo(() => {
     let vessels = [...mockVessels]
@@ -187,7 +194,7 @@ export default function VesselsPage() {
             {typeButtons.map(({ type, label, icon }) => (
               <button
                 key={type}
-                onClick={() => setSelectedType(type)}
+                onClick={() => setType(type)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition ${
                   selectedType === type
                     ? 'bg-blue-600 text-white'

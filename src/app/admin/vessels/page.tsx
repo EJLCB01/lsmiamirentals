@@ -25,10 +25,6 @@ export default function AdminVesselsPage() {
   const [typeFilter, setTypeFilter] = useState<VesselType | 'all'>('all')
   const supabase = createClient()
 
-  useEffect(() => {
-    fetchVessels()
-  }, [])
-
   const fetchVessels = async () => {
     setLoading(true)
     const { data, error } = await supabase
@@ -41,6 +37,11 @@ export default function AdminVesselsPage() {
     }
     setLoading(false)
   }
+
+  useEffect(() => {
+    fetchVessels()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this vessel? This action cannot be undone.')) return
