@@ -31,6 +31,7 @@ export default function BookingModal({
   totalPrice,
   bookingDetails 
 }: BookingModalProps) {
+  const [step, setStep] = useState<'form' | 'terms'>('form')
   const [customerInfo, setCustomerInfo] = useState<CustomerInfo>({
     name: '',
     email: '',
@@ -66,16 +67,19 @@ export default function BookingModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!validateForm()) return
-    
+
     setIsSubmitting(true)
-    
+
     // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 500))
-    
+
+    // Let the parent persist the booking lead/request
     onSubmit(customerInfo)
+
     setIsSubmitting(false)
+    setStep('terms')
   }
 
   const formatPhone = (value: string) => {
@@ -88,12 +92,20 @@ export default function BookingModal({
     return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6, 10)}`
   }
 
+  const handleClose = () => {
+    setStep('form')
+    setCustomerInfo({ name: '', email: '', phone: '' })
+    setErrors({})
+    setIsSubmitting(false)
+    onClose()
+  }
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
       <div 
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={onClose}
+        onClick={handleClose}
       />
       
       {/* Modal */}
@@ -101,12 +113,14 @@ export default function BookingModal({
         {/* Header */}
         <div className="bg-blue-600 text-white px-6 py-4">
           <button 
-            onClick={onClose}
+            onClick={handleClose}
             className="absolute top-4 right-4 text-white/80 hover:text-white"
           >
             <X className="h-6 w-6" />
           </button>
-          <h2 className="text-xl font-bold">Complete Your Booking</h2>
+          <h2 className="text-xl font-bold">
+            {step === 'form' ? 'Complete Your Booking' : 'Reservation Terms'}
+          </h2>
           <p className="text-blue-100 text-sm mt-1">{vesselName}</p>
         </div>
 
@@ -140,11 +154,12 @@ export default function BookingModal({
           </div>
         </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          <p className="text-gray-600 text-sm mb-4">
-            Please provide your contact information to proceed with the booking.
-          </p>
+        {step === 'form' ? (
+          /* Form */
+          <form onSubmit={handleSubmit} className="p-6 space-y-4">
+            <p className="text-gray-600 text-sm mb-4">
+              Please provide your contact information to proceed.
+            </p>
 
           {/* Name */}
           <div>
@@ -225,10 +240,45 @@ export default function BookingModal({
             )}
           </button>
 
-          <p className="text-xs text-gray-500 text-center">
-            By continuing, you agree to our Terms of Service and Privacy Policy.
-          </p>
-        </form>
+            <p className="text-xs text-gray-500 text-center">
+              By continuing, you agree to our Terms of Service and Privacy Policy.
+            </p>
+          </form>
+        ) : (
+          /* Terms */
+          <div className="p-6">
+            <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 text-sm text-yellow-900">
+              <p className="font-semibold mb-2">Please read before reserving:</p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><span className="font-semibold">$500 deposit</span> needed to reserve boat/yacht charter.</li>
+                <li><span className="font-semibold">Zelle or CashApp only</span> forms of payment.</li>
+                <li><span className="font-semibold">No refunds.</span></li>
+                <li><span className="font-semibold">Must be at pick up location on time.</span></li>
+              </ul>
+            </div>
+
+            <div className="mt-4 text-sm text-gray-600">
+              If you have questions, call us at <a className="text-blue-600 font-semibold hover:underline" href="tel:+19547442612">(954) 744-2612</a>.
+            </div>
+
+            <div className="mt-6 flex gap-3">
+              <button
+                type="button"
+                onClick={() => setStep('form')}
+                className="flex-1 px-4 py-3 rounded-lg border font-semibold hover:bg-gray-50 transition"
+              >
+                Back
+              </button>
+              <button
+                type="button"
+                onClick={handleClose}
+                className="flex-1 bg-blue-600 text-white px-4 py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
+              >
+                Got it
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
