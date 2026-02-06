@@ -11,6 +11,7 @@ import {
 import type { Vessel } from '@/types/database'
 import ReviewSection from '@/components/ReviewSection'
 import StarRating from '@/components/StarRating'
+import BookingModal, { CustomerInfo } from '@/components/BookingModal'
 
 // Mock data
 const mockVessels: Record<string, Vessel> = {
@@ -68,6 +69,27 @@ export default function VesselDetailPage() {
   const [hours, setHours] = useState(4)
   const [withCaptain, setWithCaptain] = useState(false)
   const [selectedDate, setSelectedDate] = useState('')
+  const [showBookingModal, setShowBookingModal] = useState(false)
+
+  const handleBookingSubmit = (customerInfo: CustomerInfo) => {
+    // Here you would typically:
+    // 1. Save customer info to database
+    // 2. Create a booking record
+    // 3. Redirect to Stripe checkout
+    console.log('Customer Info:', customerInfo)
+    console.log('Booking Details:', {
+      vesselId: vessel?.id,
+      date: selectedDate,
+      type: bookingType,
+      hours: bookingType === 'hourly' ? hours : 8,
+      withCaptain,
+      total: calculateTotal()
+    })
+    
+    // For now, show a success message
+    alert(`Thank you ${customerInfo.name}! We'll contact you at ${customerInfo.phone} to confirm your booking.`)
+    setShowBookingModal(false)
+  }
 
   if (!vessel) {
     return (
@@ -361,6 +383,7 @@ export default function VesselDetailPage() {
 
                 <button
                   disabled={!selectedDate}
+                  onClick={() => setShowBookingModal(true)}
                   className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition disabled:bg-gray-300 disabled:cursor-not-allowed"
                 >
                   {selectedDate ? 'Proceed to Checkout' : 'Select a Date'}
@@ -379,6 +402,21 @@ export default function VesselDetailPage() {
           />
         </div>
       </div>
+
+      {/* Booking Modal */}
+      <BookingModal
+        isOpen={showBookingModal}
+        onClose={() => setShowBookingModal(false)}
+        onSubmit={handleBookingSubmit}
+        vesselName={vessel.name}
+        totalPrice={calculateTotal()}
+        bookingDetails={{
+          date: selectedDate,
+          type: bookingType,
+          hours: bookingType === 'hourly' ? hours : undefined,
+          withCaptain
+        }}
+      />
     </div>
   )
 }

@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Miami Wave Rentals | Yacht, Boat & Jet Ski Rentals in Miami",
+  title: "LS Miami Rentals | Yacht, Boat & Jet Ski Rentals in Miami",
   description: "Premium yacht, boat, and jet ski rentals in Miami, FL. Experience the beautiful Miami waters with our top-quality fleet and optional captain services.",
   keywords: "yacht rental miami, boat rental miami, jet ski rental miami, miami boat charter, miami yacht charter",
 };

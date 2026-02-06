@@ -1,7 +1,7 @@
 import Hero from '@/components/Hero'
 import HotDealsSection from '@/components/HotDealsSection'
 import VesselCard from '@/components/VesselCard'
-import { ArrowRight, Shield, Clock, Award } from 'lucide-react'
+import { ArrowRight, Shield, Clock, Award, Flame } from 'lucide-react'
 import Link from 'next/link'
 import type { Vessel } from '@/types/database'
 
@@ -60,9 +60,9 @@ const mockVessels: Vessel[] = [
     captain_price_per_hour: 100,
     images: ['https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&q=80'],
     features: ['Wake Board Rack', 'Cooler'],
-    is_hot_deal: false,
-    hot_deal_discount: null,
-    hot_deal_expires: null,
+    is_hot_deal: true,
+    hot_deal_discount: 30,
+    hot_deal_expires: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString(),
     is_active: true,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
@@ -97,8 +97,24 @@ export default function Home() {
     <>
       <Hero />
       
-      {/* Hot Deals */}
-      <HotDealsSection deals={hotDeals} />
+      {/* Hot Deals (Now prominently at the top of the landing page) */}
+      <section className="py-16 bg-gradient-to-b from-red-50 to-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-12">
+          <div className="inline-flex items-center gap-2 bg-red-500 text-white px-6 py-2 rounded-full mb-4 animate-pulse">
+            <Flame className="h-6 w-6" />
+            <span className="font-bold text-lg">HOT DEALS</span>
+            <Flame className="h-6 w-6" />
+          </div>
+          <h2 className="text-4xl font-bold text-gray-900 mb-4">
+            Last-Minute Deals from Cancellations
+          </h2>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            Grab these incredible offers before they&apos;re gone! Premium vessels at 
+            unbeatable prices.
+          </p>
+        </div>
+        <HotDealsSection deals={hotDeals} />
+      </section>
 
       {/* Featured Vessels */}
       <section className="py-16">
@@ -125,7 +141,7 @@ export default function Home() {
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">
-            Why Choose Miami Wave Rentals?
+            Why Choose LS Miami Rentals?
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
