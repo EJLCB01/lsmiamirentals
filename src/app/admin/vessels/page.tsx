@@ -197,7 +197,7 @@ export default function AdminVesselsPage() {
                       {vessel.is_hot_deal ? (
                         <span className="inline-flex items-center gap-1 text-xs font-medium bg-orange-100 text-orange-700 px-2 py-1 rounded-full">
                           <Flame className="h-3 w-3" />
-                          {new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(vessel.hot_deal_discount)}% Off
+                          {new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(vessel.hot_deal_discount ?? 0)}% Off
                         </span>
                       ) : (
                         <span className="text-xs text-gray-400">—</span>

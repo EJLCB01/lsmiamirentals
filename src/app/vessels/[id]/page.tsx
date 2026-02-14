@@ -4,9 +4,18 @@ import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { 
-  ArrowLeft, Users, Ruler, Clock, Calendar, 
-  Check, Flame, Anchor, ChevronLeft, ChevronRight 
+import {
+  ArrowLeft,
+  Users,
+  Ruler,
+  Clock,
+  Calendar,
+  Check,
+  Flame,
+  Anchor,
+  ChevronLeft,
+  ChevronRight,
+  ExternalLink,
 } from 'lucide-react'
 import type { Vessel } from '@/types/database'
 import ReviewSection from '@/components/ReviewSection'
@@ -31,6 +40,7 @@ const mockVessels: Record<string, Vessel> = {
       'https://images.unsplash.com/photo-1540946485063-a40da27545f8?w=800&q=80',
     ],
     features: ['Full Bar', 'Sound System', 'Sun Deck', 'Air Conditioning', 'Jet Ski Included', 'Swimming Platform', 'Cabin', 'Kitchen'],
+    photo_links: ['https://example.com/photo-album'],
     is_hot_deal: false,
     hot_deal_discount: null,
     hot_deal_expires: null,
@@ -51,6 +61,7 @@ const mockVessels: Record<string, Vessel> = {
     captain_price_per_hour: 150,
     images: ['https://images.unsplash.com/photo-1540946485063-a40da27545f8?w=800&q=80'],
     features: ['Swim Platform', 'Bluetooth Audio', 'Cabin', 'Kitchenette'],
+    photo_links: [],
     is_hot_deal: true,
     hot_deal_discount: 25,
     hot_deal_expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
@@ -243,6 +254,27 @@ export default function VesselDetailPage() {
 
                 <p className="text-gray-600">{vessel.description}</p>
               </div>
+
+              {/* Photo Links */}
+              {vessel.photo_links && vessel.photo_links.length > 0 && (
+                <div className="mb-6">
+                  <h3 className="font-semibold text-gray-900 mb-3">More Photos</h3>
+                  <div className="space-y-2">
+                    {vessel.photo_links.map((link, idx) => (
+                      <a
+                        key={idx}
+                        href={link}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-2 text-blue-600 hover:underline text-sm"
+                      >
+                        View photo album {idx + 1}
+                        <ExternalLink className="h-4 w-4" />
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Features */}
               <div className="mb-6">

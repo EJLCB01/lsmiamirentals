@@ -23,6 +23,7 @@ CREATE TABLE vessels (
   captain_available BOOLEAN DEFAULT false,
   captain_price_per_hour DECIMAL(10,2),
   images TEXT[] DEFAULT '{}',
+  photo_links TEXT[] DEFAULT '{}',
   features TEXT[] DEFAULT '{}',
   is_hot_deal BOOLEAN DEFAULT false,
   hot_deal_discount INTEGER, -- percentage off

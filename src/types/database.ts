@@ -12,6 +12,8 @@ export interface Vessel {
   captain_available: boolean
   captain_price_per_hour: number | null
   images: string[]
+  /** Optional external album links (Google Drive, Dropbox, etc.) */
+  photo_links?: string[]
   features: string[]
   is_hot_deal: boolean
   hot_deal_discount: number | null
@@ -71,24 +73,31 @@ export interface VesselRating {
   review_count: number
 }
 
-export interface Database {
+export type Database = {
   public: {
     Tables: {
       vessels: {
         Row: Vessel
         Insert: Omit<Vessel, 'id' | 'created_at' | 'updated_at'>
         Update: Partial<Omit<Vessel, 'id' | 'created_at' | 'updated_at'>>
+        Relationships: []
       }
       bookings: {
         Row: Booking
         Insert: Omit<Booking, 'id' | 'created_at' | 'updated_at'>
         Update: Partial<Omit<Booking, 'id' | 'created_at' | 'updated_at'>>
+        Relationships: []
       }
       users: {
         Row: User
         Insert: Omit<User, 'id' | 'created_at'>
         Update: Partial<Omit<User, 'id' | 'created_at'>>
+        Relationships: []
       }
     }
+    Views: Record<string, never>
+    Functions: Record<string, never>
+    Enums: Record<string, never>
+    CompositeTypes: Record<string, never>
   }
 }

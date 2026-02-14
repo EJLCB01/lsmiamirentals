@@ -26,7 +26,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         .from('users')
         .select('is_admin')
         .eq('id', user.id)
-        .single()
+        .single<{ is_admin: boolean }>()
 
       if (!userData?.is_admin) {
         router.push('/')

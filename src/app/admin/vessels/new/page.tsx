@@ -40,8 +40,15 @@ export default function NewVesselPage() {
 
   const [features, setFeatures] = useState<string[]>(['Bluetooth Audio', 'Cooler'])
   const [newFeature, setNewFeature] = useState('')
-  const [images, setImages] = useState<string[]>(['https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800'])
+
+  const [images, setImages] = useState<string[]>([
+    'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800',
+  ])
   const [newImage, setNewImage] = useState('')
+
+  // External photo album links (Drive/Dropbox/etc.)
+  const [photoLinks, setPhotoLinks] = useState<string[]>([])
+  const [newPhotoLink, setNewPhotoLink] = useState('')
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target
@@ -71,6 +78,17 @@ export default function NewVesselPage() {
     setImages(images.filter((_, i) => i !== index))
   }
 
+  const addPhotoLink = () => {
+    if (newPhotoLink.trim()) {
+      setPhotoLinks([...photoLinks, newPhotoLink.trim()])
+      setNewPhotoLink('')
+    }
+  }
+
+  const removePhotoLink = (index: number) => {
+    setPhotoLinks(photoLinks.filter((_, i) => i !== index))
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -79,6 +97,7 @@ export default function NewVesselPage() {
       ...formData,
       features,
       images,
+      photo_links: photoLinks,
       capacity: Number(formData.capacity),
       length_ft: formData.length_ft ? Number(formData.length_ft) : null,
       price_per_hour: Number(formData.price_per_hour),
@@ -87,7 +106,7 @@ export default function NewVesselPage() {
       hot_deal_discount: formData.is_hot_deal ? Number(formData.hot_deal_discount) : null,
     }
 
-    const { error } = await supabase
+    const { error } = await (supabase as any)
       .from('vessels')
       .insert([vesselData])
 
@@ -286,7 +305,12 @@ export default function NewVesselPage() {
               <input
                 value={newFeature}
                 onChange={(e) => setNewFeature(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addFeature())}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault()
+                    addFeature()
+                  }
+                }}
                 placeholder="Add a feature..."
                 className="flex-1 border rounded-lg px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-blue-500"
               />
@@ -315,7 +339,12 @@ export default function NewVesselPage() {
               <input
                 value={newImage}
                 onChange={(e) => setNewImage(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addImage())}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault()
+                    addImage()
+                  }
+                }}
                 placeholder="Paste image URL..."
                 className="flex-1 border rounded-lg px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-blue-500"
               />
@@ -339,6 +368,66 @@ export default function NewVesselPage() {
             </div>
           </section>
         </div>
+
+        {/* Photo Album Links */}
+        <section className="bg-white p-6 rounded-xl shadow-sm border space-y-4">
+          <h2 className="text-lg font-semibold">Photo Links (External Albums)</h2>
+          <p className="text-sm text-gray-500">
+            Add links to Google Drive/Dropbox/iCloud albums if you want customers to view more photos.
+          </p>
+          <div className="flex gap-2">
+            <input
+              value={newPhotoLink}
+              onChange={(e) => setNewPhotoLink(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault()
+                  addPhotoLink()
+                }
+              }}
+              placeholder="Paste album link..."
+              className="flex-1 border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button
+              type="button"
+              onClick={addPhotoLink}
+              className="bg-gray-100 hover:bg-gray-200 p-2 rounded-lg"
+              aria-label="Add photo link"
+            >
+              <Plus className="h-4 w-4" />
+            </button>
+          </div>
+
+          <div className="space-y-2">
+            {photoLinks.length === 0 ? (
+              <p className="text-sm text-gray-400">No photo links added.</p>
+            ) : (
+              photoLinks.map((link, i) => (
+                <div
+                  key={i}
+                  className="flex items-center justify-between gap-3 bg-gray-50 p-3 rounded-lg text-sm"
+                >
+                  <a
+                    href={link}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="truncate flex-1 text-blue-600 hover:underline"
+                  >
+                    {link}
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => removePhotoLink(i)}
+                    className="text-red-500 hover:text-red-700"
+                    aria-label="Remove photo link"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+              ))
+            )}
+          </div>
+        </section>
 
         {/* Submit */}
         <div className="flex justify-end gap-4 pb-12">
