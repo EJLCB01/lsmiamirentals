@@ -104,6 +104,16 @@ export default function VesselDetailPage() {
     )
   }
 
+  const formatNumber0 = (value: number) =>
+    new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(value)
+
+  const formatUSD0 = (value: number) =>
+    new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      maximumFractionDigits: 0,
+    }).format(value)
+
   const discountedPrice = vessel.is_hot_deal && vessel.hot_deal_discount
     ? vessel.price_per_hour * (1 - vessel.hot_deal_discount / 100)
     : vessel.price_per_hour
@@ -157,7 +167,7 @@ export default function VesselDetailPage() {
               {vessel.is_hot_deal && (
                 <div className="absolute top-4 left-4 bg-red-500 text-white px-4 py-2 rounded-full font-semibold flex items-center gap-2">
                   <Flame className="h-5 w-5" />
-                  {vessel.hot_deal_discount}% OFF - Hot Deal!
+                  {formatNumber0(vessel.hot_deal_discount ?? 0)}% OFF - Hot Deal!
                 </div>
               )}
 
@@ -221,12 +231,12 @@ export default function VesselDetailPage() {
                 <div className="flex items-center gap-4 text-gray-600 mb-4">
                   <div className="flex items-center gap-1">
                     <Users className="h-5 w-5" />
-                    <span>{vessel.capacity} guests</span>
+                    <span>{formatNumber0(vessel.capacity)} guests</span>
                   </div>
                   {vessel.length_ft && (
                     <div className="flex items-center gap-1">
                       <Ruler className="h-5 w-5" />
-                      <span>{vessel.length_ft} ft</span>
+                      <span>{formatNumber0(vessel.length_ft)} ft</span>
                     </div>
                   )}
                 </div>
@@ -258,11 +268,11 @@ export default function VesselDetailPage() {
                     </span>
                     {vessel.is_hot_deal ? (
                       <div>
-                        <span className="text-gray-400 line-through mr-2">${vessel.price_per_hour}</span>
-                        <span className="font-semibold text-green-600">${discountedPrice.toFixed(0)}</span>
+                        <span className="text-gray-400 line-through mr-2">{formatUSD0(vessel.price_per_hour)}</span>
+                        <span className="font-semibold text-green-600">{formatUSD0(discountedPrice)}</span>
                       </div>
                     ) : (
-                      <span className="font-semibold">${vessel.price_per_hour}</span>
+                      <span className="font-semibold">{formatUSD0(vessel.price_per_hour)}</span>
                     )}
                   </div>
                   <div className="flex justify-between">
@@ -272,19 +282,21 @@ export default function VesselDetailPage() {
                     </span>
                     {vessel.is_hot_deal ? (
                       <div>
-                        <span className="text-gray-400 line-through mr-2">${vessel.price_per_day}</span>
+                        <span className="text-gray-400 line-through mr-2">{formatUSD0(vessel.price_per_day)}</span>
                         <span className="font-semibold text-green-600">
-                          ${(vessel.price_per_day * (1 - (vessel.hot_deal_discount || 0) / 100)).toFixed(0)}
+                          {formatUSD0(
+                            vessel.price_per_day * (1 - (vessel.hot_deal_discount || 0) / 100)
+                          )}
                         </span>
                       </div>
                     ) : (
-                      <span className="font-semibold">${vessel.price_per_day}</span>
+                      <span className="font-semibold">{formatUSD0(vessel.price_per_day)}</span>
                     )}
                   </div>
                   {vessel.captain_available && (
                     <div className="flex justify-between text-gray-600">
                       <span>Captain (optional)</span>
-                      <span>${vessel.captain_price_per_hour}/hr</span>
+                      <span>{formatUSD0(vessel.captain_price_per_hour ?? 0)}/hr</span>
                     </div>
                   )}
                 </div>
@@ -365,7 +377,7 @@ export default function VesselDetailPage() {
                         className="w-5 h-5 text-blue-600 rounded focus:ring-blue-500"
                       />
                       <span className="text-gray-700">
-                        Add Captain (+${vessel.captain_price_per_hour}/hr)
+                        Add Captain (+{formatUSD0(vessel.captain_price_per_hour ?? 0)}/hr)
                       </span>
                     </label>
                   </div>
@@ -376,7 +388,7 @@ export default function VesselDetailPage() {
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600">Estimated Total</span>
                     <span className="text-2xl font-bold text-gray-900">
-                      ${calculateTotal().toFixed(0)}
+                      {formatUSD0(calculateTotal())}
                     </span>
                   </div>
                 </div>

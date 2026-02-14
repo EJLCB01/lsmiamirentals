@@ -151,7 +151,13 @@ export default function AdminVesselsPage() {
                         </div>
                         <div>
                           <p className="font-medium text-gray-900">{vessel.name}</p>
-                          <p className="text-xs text-gray-500">{vessel.capacity} Guests • {vessel.length_ft || 'N/A'} ft</p>
+                          <p className="text-xs text-gray-500">
+                            {new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(vessel.capacity)} Guests •{' '}
+                            {vessel.length_ft == null
+                              ? 'N/A'
+                              : new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(vessel.length_ft)}{' '}
+                            ft
+                          </p>
                         </div>
                       </div>
                     </td>
@@ -159,8 +165,22 @@ export default function AdminVesselsPage() {
                       <span className="capitalize text-sm text-gray-600">{vessel.type}</span>
                     </td>
                     <td className="px-6 py-4 text-sm">
-                      <p className="text-gray-900">${vessel.price_per_hour}/hr</p>
-                      <p className="text-gray-500">${vessel.price_per_day}/day</p>
+                      <p className="text-gray-900">
+                        {new Intl.NumberFormat('en-US', {
+                          style: 'currency',
+                          currency: 'USD',
+                          maximumFractionDigits: 0,
+                        }).format(vessel.price_per_hour)}
+                        /hr
+                      </p>
+                      <p className="text-gray-500">
+                        {new Intl.NumberFormat('en-US', {
+                          style: 'currency',
+                          currency: 'USD',
+                          maximumFractionDigits: 0,
+                        }).format(vessel.price_per_day)}
+                        /day
+                      </p>
                     </td>
                     <td className="px-6 py-4">
                       {vessel.is_active ? (
@@ -176,7 +196,8 @@ export default function AdminVesselsPage() {
                     <td className="px-6 py-4">
                       {vessel.is_hot_deal ? (
                         <span className="inline-flex items-center gap-1 text-xs font-medium bg-orange-100 text-orange-700 px-2 py-1 rounded-full">
-                          <Flame className="h-3 w-3" /> {vessel.hot_deal_discount}% Off
+                          <Flame className="h-3 w-3" />
+                          {new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(vessel.hot_deal_discount)}% Off
                         </span>
                       ) : (
                         <span className="text-xs text-gray-400">—</span>

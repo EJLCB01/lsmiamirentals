@@ -12,6 +12,16 @@ export default function VesselCard({ vessel }: VesselCardProps) {
     ? vessel.price_per_hour * (1 - vessel.hot_deal_discount / 100)
     : null
 
+  const formatNumber0 = (value: number) =>
+    new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(value)
+
+  const formatUSD0 = (value: number) =>
+    new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      maximumFractionDigits: 0,
+    }).format(value)
+
   return (
     <Link href={`/vessels/${vessel.id}`}>
       <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 group">
@@ -36,7 +46,7 @@ export default function VesselCard({ vessel }: VesselCardProps) {
             {vessel.is_hot_deal ? (
               <div className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-1 shadow-lg">
                 <Flame className="h-4 w-4" />
-                {vessel.hot_deal_discount}% OFF
+                {formatNumber0(vessel.hot_deal_discount ?? 0)}% OFF
               </div>
             ) : (
               <div />
@@ -63,12 +73,12 @@ export default function VesselCard({ vessel }: VesselCardProps) {
           <div className="flex items-center gap-4 text-gray-600 text-sm mb-3">
             <div className="flex items-center gap-1">
               <Users className="h-4 w-4" />
-              <span>{vessel.capacity} guests</span>
+              <span>{formatNumber0(vessel.capacity)} guests</span>
             </div>
             {vessel.length_ft && (
               <div className="flex items-center gap-1">
                 <Ruler className="h-4 w-4" />
-                <span>{vessel.length_ft} ft</span>
+                <span>{formatNumber0(vessel.length_ft)} ft</span>
               </div>
             )}
           </div>
@@ -80,15 +90,15 @@ export default function VesselCard({ vessel }: VesselCardProps) {
               {discountedPrice ? (
                 <div className="flex items-center gap-2">
                   <span className="text-gray-400 line-through text-sm">
-                    ${vessel.price_per_hour}
+                    {formatUSD0(vessel.price_per_hour)}
                   </span>
                   <span className="text-green-600 font-bold">
-                    ${discountedPrice.toFixed(0)}/hr
+                    {formatUSD0(discountedPrice)}/hr
                   </span>
                 </div>
               ) : (
                 <span className="text-gray-900 font-semibold">
-                  ${vessel.price_per_hour}/hr
+                  {formatUSD0(vessel.price_per_hour)}/hr
                 </span>
               )}
             </div>

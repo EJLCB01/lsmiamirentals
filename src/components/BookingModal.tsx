@@ -150,7 +150,13 @@ export default function BookingModal({
           )}
           <div className="flex justify-between mt-2 pt-2 border-t border-blue-100">
             <span className="font-semibold text-gray-900">Total:</span>
-            <span className="font-bold text-xl text-blue-600">${totalPrice.toFixed(0)}</span>
+            <span className="font-bold text-xl text-blue-600">
+              {new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                maximumFractionDigits: 0,
+              }).format(totalPrice)}
+            </span>
           </div>
         </div>
 
